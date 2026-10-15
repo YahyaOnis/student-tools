@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>Student Tools | Free Calculators</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f7fc;
+      color: #17253d;
+    }
+
+    header {
+      background: #254edb;
+      color: white;
+      text-align: center;
+      padding: 35px 20px;
+    }
+
+    main {
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px #00000012;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #ccd4e0;
+      border-radius: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 22px;
+      background: #254edb;
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #596579;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Student Tools</h1>
+    <p>Free online calculators for students</p>
+  </header>
+
+  <main>
+    <div class="card">
+      <h2>Percentage Calculator</h2>
+      <p>Calculate your percentage score.</p>
+
+      <label for="earned">Marks earned</label>
+      <input id="earned" type="number"
+             min="0" step="any"
+             placeholder="Example: 85">
+
+      <label for="total">Total possible marks</label>
+      <input id="total" type="number"
+             min="0" step="any"
+             placeholder="Example: 100">
+
+      <button onclick="calculate()">
+        Calculate Percentage
+      </button>
+
+      <div id="result" role="status"></div>
+    </div>
+  </main>
+
+  <footer>
+    Student Tools - Free Educational Calculators
+  </footer>
+
+  <script>
+    function calculate() {
+      const earnedInput =
+        document.getElementById("earned");
+      const totalInput =
+        document.getElementById("total");
+      const result =
+        document.getElementById("result");
+
+      if (earnedInput.value.trim() === "" ||
+          totalInput.value.trim() === "") {
+        result.textContent = "Enter both numbers.";
+        return;
+      }
+
+      const earned = Number(earnedInput.value);
+      const total = Number(totalInput.value);
+
+      if (!Number.isFinite(earned) ||
+          !Number.isFinite(total) ||
+          total <= 0 ||
+          earned < 0 ||
+          earned > total) {
+        result.textContent =
+          "Enter valid marks (total must be positive).";
+        return;
+      }
+
+      const percentage = (earned / total) * 100;
+
+      result.textContent =
+        "Your percentage: " +
+        percentage.toFixed(2) + "%";
+    }
+  </script>
+</body>
+</html>
