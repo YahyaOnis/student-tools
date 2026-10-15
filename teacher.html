@@ -1,0 +1,747 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Free guided learning for Grades 1-6 in English, French and Arabic.">
+<title>Student Tools | My Learning Teacher</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f2f6ff;
+  color: #243451;
+  line-height: 1.6;
+}
+
+header {
+  background: linear-gradient(120deg, #2753c7, #6a8df5);
+  color: white;
+  text-align: center;
+  padding: 30px 15px;
+}
+
+h1 { margin: 0; }
+
+.container {
+  max-width: 950px;
+  margin: auto;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 18px #00000012;
+}
+
+h2 { margin-top: 0; }
+
+select, input {
+  width: 100%;
+  padding: 12px;
+  font: inherit;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  margin: 8px 0 15px;
+}
+
+button {
+  background: #2856ce;
+  color: white;
+  padding: 12px 19px;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: bold;
+}
+
+button:hover { background: #183f9d; }
+
+button:focus-visible, select:focus-visible {
+  outline: 3px solid #ffbc42;
+  outline-offset: 3px;
+}
+
+.choices, .subjects {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.subjects { grid-template-columns: repeat(3, 1fr); }
+
+.choice, .subject {
+  background: #edf2ff;
+  color: #173c91;
+  border: 2px solid #cbd8ff;
+  min-height: 55px;
+}
+
+.choice:hover, .subject:hover {
+  background: #dbe6ff;
+}
+
+.subject.active {
+  background: #2856ce;
+  color: white;
+  border-color: #2856ce;
+}
+
+.teacher {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  background: #eaf9f0;
+  padding: 18px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.robot { font-size: 40px; }
+
+.question {
+  font-size: 23px;
+  font-weight: bold;
+  text-align: center;
+  margin: 22px 0;
+}
+
+.feedback {
+  padding: 15px;
+  border-radius: 10px;
+  background: #edf2ff;
+  margin-top: 15px;
+  min-height: 55px;
+}
+
+.correct { background: #ddf8e7; color: #176332; }
+.wrong { background: #fff0dd; color: #8a4900; }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.secondary { background: #64748b; }
+
+.score {
+  font-weight: bold;
+  color: #2856ce;
+}
+
+.small { color: #62718a; font-size: 14px; }
+
+footer {
+  text-align: center;
+  color: #62718a;
+  padding: 25px;
+}
+
+@media(max-width: 550px) {
+  .subjects { grid-template-columns: 1fr; }
+  .choices { grid-template-columns: 1fr 1fr; }
+  .card { padding: 18px; }
+}
+
+[dir="rtl"] .teacher {
+  flex-direction: row-reverse;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎓 Student Tools Teacher</h1>
+  <p id="subtitle"></p>
+</header>
+
+<main class="container">
+
+<section class="card">
+  <h2 id="welcome"></h2>
+
+  <label for="language" id="languageLabel"></label>
+  <select id="language">
+    <option value="en">🇨🇦 English</option>
+    <option value="fr">🇫🇷 Français</option>
+    <option value="ar">🇸🇦 العربية</option>
+  </select>
+
+  <label for="grade" id="gradeLabel"></label>
+  <select id="grade">
+    <option value="1">Grade 1</option>
+    <option value="2">Grade 2</option>
+    <option value="3">Grade 3</option>
+    <option value="4">Grade 4</option>
+    <option value="5">Grade 5</option>
+    <option value="6">Grade 6</option>
+  </select>
+</section>
+
+<section class="card">
+  <h2 id="subjectLabel"></h2>
+  <div class="subjects">
+    <button class="subject active" data-subject="math"
+      id="mathButton">🔢 Math</button>
+    <button class="subject" data-subject="reading"
+      id="readingButton">📚 Reading</button>
+    <button class="subject" data-subject="science"
+      id="scienceButton">🌎 Science</button>
+  </div>
+</section>
+
+<section class="card">
+  <div class="teacher">
+    <span class="robot" aria-hidden="true">🤖</span>
+    <div>
+      <strong id="teacherTitle"></strong>
+      <p id="teacherMessage"></p>
+    </div>
+  </div>
+
+  <h2 id="lessonTitle"></h2>
+  <p id="lessonExplanation"></p>
+
+  <div class="question" id="question"></div>
+
+  <div class="choices" id="choices"></div>
+
+  <div id="feedback" class="feedback"
+       role="status" aria-live="polite"></div>
+
+  <div class="actions">
+    <button class="secondary" id="hintButton"
+      type="button"></button>
+    <button id="nextButton" type="button"></button>
+  </div>
+
+  <p class="score" id="score"></p>
+  <p class="small" id="scoreNote"></p>
+</section>
+
+<section class="card">
+  <h2 id="aboutTitle"></h2>
+  <p id="aboutText"></p>
+  <p>
+    <a href="index.html" id="calculatorLink"></a>
+  </p>
+</section>
+
+</main>
+
+<footer>
+  <p>© Student Tools — Free Guided Learning</p>
+  <p id="footerNote"></p>
+</footer>
+
+<script>
+"use strict";
+
+// LANGUAGE TRANSLATIONS
+const translations = {
+  en: {
+    subtitle: "Free Learning for Grades 1–6",
+    welcome: "Welcome to Your Classroom!",
+    language: "Choose your language",
+    grade: "Choose your grade",
+    gradeName: "Grade",
+    subject: "What would you like to learn?",
+    math: "Math",
+    reading: "Reading",
+    science: "Science",
+    teacher: "Your Friendly Teacher",
+    message: "Hello! Let's learn something new together.",
+    mathLesson: "Let's Practise Math",
+    readingLesson: "Let's Practise Reading",
+    scienceLesson: "Let's Explore Science",
+    mathExplain: "Read the problem and choose the correct answer.",
+    readingExplain: "Read carefully and choose the best answer.",
+    scienceExplain: "Think about what you know about our world.",
+    choose: "Choose an answer to continue.",
+    correct: "Excellent! That's correct! 🌟",
+    wrong: "Not quite. Try another answer!",
+    hint: "💡 Give Me a Hint",
+    next: "Next Question ➜",
+    score: "Correct answers",
+    tip: "Your score resets when you change your grade, subject or language.",
+    aboutTitle: "About This Learning Platform",
+    about: "Practice school subjects through guided questions, hints and feedback. No student account is needed.",
+    calculators: "Open our free student calculators",
+    footer: "This is a guided practice tool, not a live AI chatbot.",
+    hintMath: "Use addition, subtraction, multiplication or division to solve the problem."
+  },
+  fr: {
+    subtitle: "Apprentissage gratuit de la 1re à la 6e année",
+    welcome: "Bienvenue dans ta classe !",
+    language: "Choisis ta langue",
+    grade: "Choisis ton année scolaire",
+    gradeName: "Année",
+    subject: "Que veux-tu apprendre ?",
+    math: "Mathématiques",
+    reading: "Lecture",
+    science: "Sciences",
+    teacher: "Ton professeur",
+    message: "Bonjour ! Apprenons quelque chose ensemble.",
+    mathLesson: "Pratiquons les maths",
+    readingLesson: "Pratiquons la lecture",
+    scienceLesson: "Explorons les sciences",
+    mathExplain: "Lis le problème et choisis la bonne réponse.",
+    readingExplain: "Lis attentivement et choisis la meilleure réponse.",
+    scienceExplain: "Réfléchis à ce que tu sais sur le monde.",
+    choose: "Choisis une réponse pour continuer.",
+    correct: "Excellent ! C'est correct ! 🌟",
+    wrong: "Pas tout à fait. Essaie une autre réponse !",
+    hint: "💡 Un indice",
+    next: "Question suivante ➜",
+    score: "Bonnes réponses",
+    tip: "Ton score est réinitialisé si tu changes d'année, de matière ou de langue.",
+    aboutTitle: "À propos de cette plateforme",
+    about: "Apprends avec des questions, des indices et des explications. Aucun compte n'est nécessaire.",
+    calculators: "Ouvrir nos calculatrices gratuites",
+    footer: "Cet outil propose des exercices guidés, sans chatbot IA en direct.",
+    hintMath: "Utilise l'addition, la soustraction, la multiplication ou la division."
+  },
+  ar: {
+    subtitle: "تعلم مجاني للصفوف من الأول إلى السادس",
+    welcome: "مرحباً بك في صفك الدراسي!",
+    language: "اختر لغتك",
+    grade: "اختر صفك",
+    gradeName: "الصف",
+    subject: "ماذا تريد أن تتعلم؟",
+    math: "الرياضيات",
+    reading: "القراءة",
+    science: "العلوم",
+    teacher: "معلمك الودود",
+    message: "مرحباً! هيا نتعلم شيئاً جديداً معاً.",
+    mathLesson: "هيا نتدرب على الرياضيات",
+    readingLesson: "هيا نتدرب على القراءة",
+    scienceLesson: "هيا نستكشف العلوم",
+    mathExplain: "اقرأ المسألة واختر الإجابة الصحيحة.",
+    readingExplain: "اقرأ السؤال جيداً واختر أفضل إجابة.",
+    scienceExplain: "فكر فيما تعرفه عن العالم من حولنا.",
+    choose: "اختر إجابة للمتابعة.",
+    correct: "ممتاز! إجابة صحيحة! 🌟",
+    wrong: "ليست صحيحة بعد. حاول مرة أخرى!",
+    hint: "💡 أعطني تلميحاً",
+    next: "السؤال التالي ←",
+    score: "الإجابات الصحيحة",
+    tip: "تبدأ نتيجتك من جديد عند تغيير الصف أو المادة أو اللغة.",
+    aboutTitle: "حول منصة التعلم",
+    about: "تدرب على المواد المدرسية عبر الأسئلة والتلميحات والتوضيحات دون الحاجة إلى إنشاء حساب.",
+    calculators: "افتح حاسبات الطلاب المجانية",
+    footer: "هذه أداة تدريب تفاعلية وليست محادثة مباشرة مع الذكاء الاصطناعي.",
+    hintMath: "استخدم الجمع أو الطرح أو الضرب أو القسمة لحل المسألة."
+  }
+};
+
+// QUESTION DATA
+// Each grade has reading and science practice.
+// Every question includes all three languages.
+
+const lessons = {
+  reading: [
+    {
+      en: ["The cat is sleeping. What is sleeping?",
+           ["The cat", "The car", "The tree", "The sun"], 0,
+           "Look for the animal in the sentence."],
+      fr: ["Le chat dort. Qui dort ?",
+           ["Le chat", "La voiture", "L'arbre", "Le soleil"], 0,
+           "Cherche l'animal dans la phrase."],
+      ar: ["القطة نائمة. من الذي ينام؟",
+           ["القطة", "السيارة", "الشجرة", "الشمس"], 0,
+           "ابحث عن الحيوان في الجملة."]
+    },
+    {
+      en: ["Which word is the opposite of 'hot'?",
+           ["Warm", "Cold", "Big", "Fast"], 1,
+           "Think about snow and ice."],
+      fr: ["Quel mot est le contraire de « chaud » ?",
+           ["Tiède", "Froid", "Grand", "Rapide"], 1,
+           "Pense à la neige et à la glace."],
+      ar: ["ما عكس كلمة «ساخن»؟",
+           ["دافئ", "بارد", "كبير", "سريع"], 1,
+           "فكر في الثلج والجليد."]
+    },
+    {
+      en: ["Sara went to the library to borrow a book. Where did Sara go?",
+           ["The park", "The library", "The store", "The hospital"], 1,
+           "Look for the place mentioned in the sentence."],
+      fr: ["Sara est allée à la bibliothèque emprunter un livre. Où est-elle allée ?",
+           ["Au parc", "À la bibliothèque", "Au magasin", "À l'hôpital"], 1,
+           "Trouve le lieu mentionné dans la phrase."],
+      ar: ["ذهبت سارة إلى المكتبة لاستعارة كتاب. إلى أين ذهبت؟",
+           ["الحديقة", "المكتبة", "المتجر", "المستشفى"], 1,
+           "ابحث عن المكان المذكور في الجملة."]
+    },
+    {
+      en: ["Which sentence is written in the past tense?",
+           ["I walk home.", "I will walk home.", "I walked home.", "I am walking."], 2,
+           "Past tense describes something that already happened."],
+      fr: ["Quelle phrase est au passé ?",
+           ["Je marche.", "Je marcherai.", "J'ai marché.", "Je suis en train de marcher."], 2,
+           "Le passé décrit une action déjà terminée."],
+      ar: ["أي جملة تدل على الماضي؟",
+           ["أنا أكتب الآن", "سأكتب غداً", "كتبت أمس", "أكتب كل يوم"], 2,
+           "الفعل الماضي يدل على حدث وقع وانتهى."]
+    },
+    {
+      en: ["Lina studied every day and improved her reading. What helped her improve?",
+           ["Practice", "Sleeping", "Running", "Waiting"], 0,
+           "Look for what Lina did every day."],
+      fr: ["Lina a étudié chaque jour et a amélioré sa lecture. Qu'est-ce qui l'a aidée ?",
+           ["La pratique", "Dormir", "Courir", "Attendre"], 0,
+           "Que faisait Lina chaque jour ?"],
+      ar: ["درست لينا كل يوم فتحسنت قراءتها. ما الذي ساعدها؟",
+           ["التدريب", "النوم", "الجري", "الانتظار"], 0,
+           "ماذا كانت لينا تفعل كل يوم؟"]
+    },
+    {
+      en: ["The author describes a storm with dark clouds and thunder. What mood is created?",
+           ["Tense", "Cheerful", "Silly", "Relaxed"], 0,
+           "Think about how thunder and dark clouds might make someone feel."],
+      fr: ["L'auteur décrit un orage avec des nuages sombres et du tonnerre. Quelle ambiance est créée ?",
+           ["Inquiétante", "Joyeuse", "Comique", "Reposante"], 0,
+           "Pense aux sentiments provoqués par un orage."],
+      ar: ["وصف الكاتب عاصفة وغيومًا داكنة ورعدًا. ما الجو الذي يخلقه الوصف؟",
+           ["التوتر", "الفرح", "المرح", "الهدوء"], 0,
+           "فكر في الشعور الذي يسببه الرعد والغيوم الداكنة."]
+    }
+  ],
+  science: [
+    {
+      en: ["What do plants need to grow?",
+           ["Sunlight and water", "Plastic", "Metal", "Sand only"], 0,
+           "Plants need light and water."],
+      fr: ["De quoi les plantes ont-elles besoin pour pousser ?",
+           ["De lumière et d'eau", "De plastique", "De métal", "De sable seulement"], 0,
+           "Les plantes ont besoin de lumière et d'eau."],
+      ar: ["ماذا تحتاج النباتات لتنمو؟",
+           ["ضوء الشمس والماء", "البلاستيك", "المعدن", "الرمل فقط"], 0,
+           "تحتاج النباتات إلى الضوء والماء."]
+    },
+    {
+      en: ["Which animal begins its life as a tadpole?",
+           ["Dog", "Frog", "Bird", "Cat"], 1,
+           "Think of an animal that lives in water and on land."],
+      fr: ["Quel animal commence sa vie comme têtard ?",
+           ["Chien", "Grenouille", "Oiseau", "Chat"], 1,
+           "Pense à un animal qui vit dans l'eau et sur terre."],
+      ar: ["أي حيوان يبدأ حياته على شكل شرغوف؟",
+           ["الكلب", "الضفدع", "الطائر", "القطة"], 1,
+           "فكر في حيوان يعيش في الماء وعلى اليابسة."]
+    },
+    {
+      en: ["What causes day and night?",
+           ["Earth rotating", "Rain", "Clouds", "The Moon changing shape"], 0,
+           "Think about Earth's movement around its own axis."],
+      fr: ["Qu'est-ce qui cause le jour et la nuit ?",
+           ["La rotation de la Terre", "La pluie", "Les nuages", "La forme de la Lune"], 0,
+           "Pense au mouvement de la Terre sur elle-même."],
+      ar: ["ما سبب تعاقب الليل والنهار؟",
+           ["دوران الأرض حول نفسها", "المطر", "الغيوم", "تغير شكل القمر"], 0,
+           "فكر في دوران الأرض حول محورها."]
+    },
+    {
+      en: ["Which force pulls objects toward Earth?",
+           ["Magnetism", "Friction", "Gravity", "Sound"], 2,
+           "This force makes objects fall when dropped."],
+      fr: ["Quelle force attire les objets vers la Terre ?",
+           ["Le magnétisme", "Le frottement", "La gravité", "Le son"], 2,
+           "Cette force fait tomber les objets."],
+      ar: ["ما القوة التي تجذب الأشياء نحو الأرض؟",
+           ["المغناطيسية", "الاحتكاك", "الجاذبية", "الصوت"], 2,
+           "هذه القوة تجعل الأشياء تسقط."]
+    },
+    {
+      en: ["During evaporation, liquid water changes into what?",
+           ["Ice", "Water vapour", "Soil", "Salt"], 1,
+           "Think about water changing from liquid to gas."],
+      fr: ["Lors de l'évaporation, l'eau liquide devient quoi ?",
+           ["De la glace", "De la vapeur d'eau", "De la terre", "Du sel"], 1,
+           "L'eau passe de l'état liquide à l'état gazeux."],
+      ar: ["إلى ماذا يتحول الماء السائل أثناء التبخر؟",
+           ["جليد", "بخار ماء", "تراب", "ملح"], 1,
+           "يتحول الماء من الحالة السائلة إلى الغازية."]
+    },
+    {
+      en: ["In a food chain, what is the main energy source for most ecosystems?",
+           ["The Sun", "The Moon", "Rocks", "Wind"], 0,
+           "Plants capture energy through photosynthesis."],
+      fr: ["Dans une chaîne alimentaire, quelle est la principale source d'énergie de la plupart des écosystèmes ?",
+           ["Le Soleil", "La Lune", "Les roches", "Le vent"], 0,
+           "Les plantes captent l'énergie grâce à la photosynthèse."],
+      ar: ["ما المصدر الأساسي للطاقة في معظم الأنظمة البيئية؟",
+           ["الشمس", "القمر", "الصخور", "الرياح"], 0,
+           "تمتص النباتات الطاقة عبر عملية البناء الضوئي."]
+    }
+  ]
+};
+
+let lang = "en";
+let grade = 1;
+let subject = "math";
+let points = 0;
+let attempts = 0;
+let current = null;
+let solved = false;
+
+const $ = id => document.getElementById(id);
+const random = max => Math.floor(Math.random() * max);
+
+// GENERATE MATH QUESTIONS BY GRADE
+function makeMathQuestion() {
+  let a, b, answer, expression, explanation;
+  const level = Math.min(grade + Math.floor(attempts / 6), 8);
+
+  if (level === 1) {
+    a = 1 + random(9);
+    b = 1 + random(10 - a);
+    answer = a + b;
+    expression = `${a} + ${b} = ?`;
+    explanation = `${a} + ${b} = ${answer}`;
+  } else if (level === 2) {
+    a = 5 + random(16);
+    b = random(a + 1);
+    answer = a - b;
+    expression = `${a} − ${b} = ?`;
+    explanation = `${a} − ${b} = ${answer}`;
+  } else if (level === 3) {
+    a = 2 + random(9);
+    b = 2 + random(9);
+    answer = a * b;
+    expression = `${a} × ${b} = ?`;
+    explanation = `${a} × ${b} = ${answer}`;
+  } else if (level === 4) {
+    b = 2 + random(10);
+    answer = 2 + random(10);
+    a = b * answer;
+    expression = `${a} ÷ ${b} = ?`;
+    explanation = `${a} ÷ ${b} = ${answer}`;
+  } else if (level === 5) {
+    a = 10 + random(91);
+    b = 10 + random(91);
+    answer = a + b;
+    expression = `${a} + ${b} = ?`;
+    explanation = `${a} + ${b} = ${answer}`;
+  } else {
+    a = 2 + random(10);
+    b = 2 + random(10);
+    answer = a * b;
+    expression = `${a} × ${b} = ?`;
+    explanation = `${a} × ${b} = ${answer}`;
+  }
+
+  // Create four distinct answer choices.
+  const choices = [answer];
+  let offset = 1;
+
+  while (choices.length < 4) {
+    const candidate = answer + offset * (offset % 2 ? 1 : -1);
+    if (candidate >= 0 && !choices.includes(candidate)) {
+      choices.push(candidate);
+    }
+    offset++;
+  }
+
+  // Shuffle the choices.
+  for (let i = choices.length - 1; i > 0; i--) {
+    const j = random(i + 1);
+    [choices[i], choices[j]] = [choices[j], choices[i]];
+  }
+
+  return {
+    question: expression,
+    choices: choices.map(String),
+    correct: choices.indexOf(answer),
+    hint: explanation
+  };
+}
+
+// DISPLAY TRANSLATED INTERFACE
+function updateLanguage() {
+  lang = $("language").value;
+  document.documentElement.lang = lang;
+  document.documentElement.dir =
+    lang === "ar" ? "rtl" : "ltr";
+
+  const t = translations[lang];
+
+  const labels = {
+    subtitle: t.subtitle,
+    welcome: t.welcome,
+    languageLabel: t.language,
+    gradeLabel: t.grade,
+    subjectLabel: t.subject,
+    mathButton: "🔢 " + t.math,
+    readingButton: "📚 " + t.reading,
+    scienceButton: "🌎 " + t.science,
+    teacherTitle: t.teacher,
+    teacherMessage: t.message,
+    hintButton: t.hint,
+    nextButton: t.next,
+    aboutTitle: t.aboutTitle,
+    aboutText: t.about,
+    calculatorLink: t.calculators,
+    footerNote: t.footer,
+    scoreNote: t.tip
+  };
+
+  Object.entries(labels).forEach(([id, value]) => {
+    $(id).textContent = value;
+  });
+
+  const gradeSelect = $("grade");
+  for (let i = 0; i < 6; i++) {
+    gradeSelect.options[i].textContent =
+      t.gradeName + " " + (i + 1);
+  }
+
+  points = 0;
+  attempts = 0;
+  generateQuestion();
+}
+
+// SWITCH SUBJECT
+function changeSubject(nextSubject) {
+  subject = nextSubject;
+  points = 0;
+  attempts = 0;
+
+  document.querySelectorAll(".subject")
+    .forEach(button => {
+      button.classList.toggle(
+        "active",
+        button.dataset.subject === subject
+      );
+    });
+
+  generateQuestion();
+}
+
+// GENERATE NEW QUESTION
+function generateQuestion() {
+  const t = translations[lang];
+
+  solved = false;
+
+  if (subject === "math") {
+    current = makeMathQuestion();
+    $("lessonTitle").textContent = t.mathLesson;
+    $("lessonExplanation").textContent = t.mathExplain;
+  } else {
+    const data = lessons[subject][grade - 1][lang];
+
+    current = {
+      question: data[0],
+      choices: data[1],
+      correct: data[2],
+      hint: data[3]
+    };
+
+    $("lessonTitle").textContent =
+      subject === "reading"
+      ? t.readingLesson
+      : t.scienceLesson;
+
+    $("lessonExplanation").textContent =
+      subject === "reading"
+      ? t.readingExplain
+      : t.scienceExplain;
+  }
+
+  $("question").textContent = current.question;
+  $("feedback").textContent = t.choose;
+  $("feedback").className = "feedback";
+  $("choices").replaceChildren();
+
+  current.choices.forEach((choice, index) => {
+    const button = document.createElement("button");
+    button.className = "choice";
+    button.type = "button";
+    button.textContent = choice;
+    button.addEventListener("click", () => {
+      checkAnswer(index);
+    });
+    $("choices").appendChild(button);
+  });
+
+  updateScore();
+}
+
+// CHECK ANSWER
+function checkAnswer(index) {
+  const t = translations[lang];
+
+  if (solved) return;
+
+  if (index === current.correct) {
+    solved = true;
+    points++;
+    $("feedback").textContent = t.correct;
+    $("feedback").className = "feedback correct";
+
+    $("choices").querySelectorAll("button")
+      .forEach(button => button.disabled = true);
+  } else {
+    $("feedback").textContent = t.wrong;
+    $("feedback").className = "feedback wrong";
+  }
+
+  updateScore();
+}
+
+// DISPLAY HINT
+function showHint() {
+  $("feedback").textContent = current.hint;
+  $("feedback").className = "feedback";
+}
+
+// NEXT QUESTION
+function nextQuestion() {
+  attempts++;
+  generateQuestion();
+}
+
+// SCORE TRACKER
+function updateScore() {
+  $("score").textContent =
+    translations[lang].score + ": " + points;
+}
+
+// EVENTS
+$("language").addEventListener("change", updateLanguage);
+
+$("grade").addEventListener("change", () => {
+  grade = Number($("grade").value);
+  points = 0;
+  attempts = 0;
+  generateQuestion();
+});
+
+document.querySelectorAll(".subject")
+  .forEach(button => {
+    button.addEventListener("click", () =>
+      changeSubject(button.dataset.subject)
+    );
+  });
+
+$("hintButton").addEventListener("click", showHint);
+$("nextButton").addEventListener("click", nextQuestion);
+
+// START WEBSITE
+updateLanguage();
+
+</script>
+</body>
+</html>
